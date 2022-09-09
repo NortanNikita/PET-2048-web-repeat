@@ -58,7 +58,7 @@ function init(gameContainer = 'body', areaSize = 4) {
   const getRandomEmptyCell = () => {
     let pos = [getRandomInt(4),getRandomInt(4)];
     if(hasGameNum(pos)) {
-      getRandomEmptyCell();
+      return getRandomEmptyCell();
     } else {
       return pos;
     }
@@ -250,6 +250,7 @@ function init(gameContainer = 'body', areaSize = 4) {
     }
     if (hasWinNum()) alert('u win');
     if (hasEmptyCell) {
+      console.log('hasEmptyCell')
       needLooseCheck = false;
       setGameNum(2, getRandomEmptyCell());
     } else {
