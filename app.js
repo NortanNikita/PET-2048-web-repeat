@@ -1,33 +1,27 @@
-// Игровой флоу по оси Y 
-// Если я делаю свайп вверх или вниз:
-// 1. Перемещение происходит только по i (по строкам)
+// 1. Перемещение происходит только по 1 оси 
 // 2. Если Это край перемещения не происходит
 // 3. Если В клетке в которую ты перемещаешь есть цифра и она равна твоей они схлопываются в последней ячейке
-// 4. Перемещение происходит От края в который ты свайпаешь,
-//    если свайпаешь вверх то перемещение начинается с самой верхней цифры,
-//    если вниз то с самой нижней
-
-// нужна проверка есть ли пустые слоты hasEmptyCell
-// Добавлять новую цифру если hasEmptyCell === true - после свайпа 
-// Проверять игру на победу - если есть поле с числом 2048 после свайпа
-// Проверять игру на проигрышь - hasEmptyCell === false и свайп произошел
+// 4. Перемещение происходит от края в который ты свайпаешьй
 
 function init(gameContainer = 'body', areaSize = 4) {
   const GAME_CONTAINER = document.querySelector(gameContainer); // some game container
   // ---- game props -----
   const AREA_SIZE = areaSize;
+
+  const flexCenter = `
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `
   // ---- /game props -----
   
   // ---- controls -----
   const controlsArr = ['left','right','up','down']
   const buttonsContainer = document.createElement('div');
-  buttonsContainer.style.cssText = `
-    display: flex;
+  buttonsContainer.style.cssText = flexCenter + `
     width: 300px;
     height: 50px;
-    align-items: center;
     gap: 10px;
-    justify-content: center;
   `;
   controlsArr.forEach((side) => {
     const button = document.createElement('button');
@@ -80,10 +74,7 @@ function init(gameContainer = 'body', areaSize = 4) {
     const cell = document.createElement('div');
     cell.classList.add(`cell`);
     cell.classList.add(`cell-${position[0]}-${position[1]}`);
-    cell.style.cssText = `
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    cell.style.cssText = flexCenter + `
       border: 1px solid black;
       background: #ccc0b3;
     `;
@@ -101,98 +92,62 @@ function init(gameContainer = 'body', areaSize = 4) {
     cells[position[0]][position[1]].num = num;
     switch (num) {
       case 2:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #eee4da;`;
         break;
       case 4:
-        visualCell.style.cssText = `
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        visualCell.style.cssText = flexCenter + `
         border: 1px solid black;
         background: #eddfc9;`;
         break;
       case 8:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #f59563;`;
         break;
       case 16:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #f59563;`;
         break;
       case 32:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #fa7a5c`;
         break;
       case 64:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #fb5c3c`;
         break;
       case 128:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #f0ce6e`;
         break;
       case 256:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #f2c770`;
         break;
       case 512:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #efc851`;
         break;
       case 1024:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #efc851`;
         break;
       case 2048:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #e2bf49`;
         break;
       default:
-        visualCell.style.cssText = `
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        visualCell.style.cssText = flexCenter + `
           border: 1px solid black;
           background: #ccc0b3`;
         break;
@@ -250,7 +205,6 @@ function init(gameContainer = 'body', areaSize = 4) {
     }
     if (hasWinNum()) alert('u win');
     if (hasEmptyCell) {
-      console.log('hasEmptyCell')
       needLooseCheck = false;
       setGameNum(2, getRandomEmptyCell());
     } else {
