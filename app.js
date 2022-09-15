@@ -3,11 +3,27 @@
 // 3. Если В клетке в которую ты перемещаешь есть цифра и она равна твоей они схлопываются в последней ячейке
 // 4. Перемещение происходит от края в который ты свайпаешьй
 
+const getRandomInt = (max = 3) => {
+  return Math.floor(Math.random() * max);
+}
+
 function init(gameContainer = 'body', areaSize = 4) {
   const GAME_CONTAINER = document.querySelector(gameContainer); // some game container
   // ---- game props -----
   const AREA_SIZE = areaSize;
-
+  const NUM_COLORS = {
+    2: '#eee4da',
+    4: '#eddfc9',
+    8: '#f59563',
+    16: '#f59563',
+    32: '#fa7a5c',
+    64: '#fb5c3c',
+    128: '#f0ce6e',
+    256: '#f2c770',
+    512: '#efc851',
+    1024: '#efc851',
+    2048: '#e2bf49',
+  }
   const flexCenter = `
     display: flex;
     align-items: center;
@@ -40,17 +56,15 @@ function init(gameContainer = 'body', areaSize = 4) {
     height: 300px;
     grid-template-rows: repeat(${AREA_SIZE}, 1fr);
     grid-template-columns: repeat(${AREA_SIZE}, 1fr);
-    border: 2px solid black;border-radius: 5px;
+    border: 5px solid #bbada0; border-radius: 5px;
   `;
   
   let cells = [];
   let looseCheck = false;
   // ---- functions -----
-  const getRandomInt = (max = 3) => {
-    return Math.floor(Math.random() * max);
-  }
+  
   const getRandomEmptyCell = () => {
-    let pos = [getRandomInt(4),getRandomInt(4)];
+    let pos = [getRandomInt(AREA_SIZE),getRandomInt(AREA_SIZE)];
     if(hasGameNum(pos)) {
       return getRandomEmptyCell();
     } else {
@@ -75,7 +89,7 @@ function init(gameContainer = 'body', areaSize = 4) {
     cell.classList.add(`cell`);
     cell.classList.add(`cell-${position[0]}-${position[1]}`);
     cell.style.cssText = flexCenter + `
-      border: 1px solid black;
+      border: 5px solid #bbada0;
       background: #ccc0b3;
     `;
     return cell;
@@ -90,68 +104,9 @@ function init(gameContainer = 'body', areaSize = 4) {
     const visualCell = document.querySelector(`.cell-${position[0]}-${position[1]}`);
     visualCell.innerText = num ? `${num}` : '';
     cells[position[0]][position[1]].num = num;
-    switch (num) {
-      case 2:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #eee4da;`;
-        break;
-      case 4:
-        visualCell.style.cssText = flexCenter + `
-        border: 1px solid black;
-        background: #eddfc9;`;
-        break;
-      case 8:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #f59563;`;
-        break;
-      case 16:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #f59563;`;
-        break;
-      case 32:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #fa7a5c`;
-        break;
-      case 64:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #fb5c3c`;
-        break;
-      case 128:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #f0ce6e`;
-        break;
-      case 256:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #f2c770`;
-        break;
-      case 512:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #efc851`;
-        break;
-      case 1024:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #efc851`;
-        break;
-      case 2048:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #e2bf49`;
-        break;
-      default:
-        visualCell.style.cssText = flexCenter + `
-          border: 1px solid black;
-          background: #ccc0b3`;
-        break;
-    }
+    visualCell.style.cssText = flexCenter + `
+      border: 5px solid #bbada0;
+      background: ${num ? NUM_COLORS[num] : '#ccc0b3'}`;
   }
   const getNewPosBySide = (oldPosition, swipeSide) => {
     switch(swipeSide) {
@@ -167,7 +122,9 @@ function init(gameContainer = 'body', areaSize = 4) {
   }
   const swipeHandler = (side) => {
     if (!side) return false;
+
     const cellsArray = document.querySelectorAll('.cell');
+    
     let hasEmptyCell = false;
     
     for(let g = 0; g < AREA_SIZE; g++) { // ТУПО ЗАХАРДКОДИЛ, потому-что размер зоны это макс кол-во того что может схлопнуться за 1 свайп
@@ -179,12 +136,15 @@ function init(gameContainer = 'body', areaSize = 4) {
           }
         })
       })
+
       hasEmptyCell = !(cellsWithGameNum.length === cellsArray.length);
+      
       let cellsWithGameNumBySide = (
         side === 'down' || side === 'right' ?
         cellsWithGameNum.reverse() : 
         cellsWithGameNum
       );
+
       cellsWithGameNumBySide.forEach(item => { // перебираю все ячейки которые заполнены
         let newPos = getNewPosBySide(item.position, side);
         let number = item.num;
@@ -203,7 +163,9 @@ function init(gameContainer = 'body', areaSize = 4) {
         }
       })
     }
+    
     if (hasWinNum()) alert('u win');
+    
     if (hasEmptyCell) {
       needLooseCheck = false;
       setGameNum(2, getRandomEmptyCell());
